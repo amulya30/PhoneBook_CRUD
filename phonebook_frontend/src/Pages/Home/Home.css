@@ -1,0 +1,62 @@
+.home {
+  height: 400px;
+  background-image: linear-gradient(to right, #ffd8c8, #f9d29d);
+}
+
+.home .grid {
+  overflow: visible;
+  /* grid-template-columns: 45% 35%; */
+  padding-top: 30px;
+  gap:10px;
+}
+
+.add-contact-form {
+  position: relative;
+  height: 300px;
+  width: 290px;
+  padding: 30px;
+  z-index: 100;
+  justify-self: flex-start;
+}
+
+.my-contacts-form{
+  position: relative;
+  justify-self: flex-start;
+  width: 650px;
+  padding: 30px;
+}
+
+.add-contact-form .form-control {
+  margin-top: 30px;
+}
+
+.home input {
+  border: 0;
+  outline: 0;
+  width: 100%;
+  padding-top: 15px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 15px;
+  border-bottom: 1px solid #747070;
+  background-color: #f4f4f4;
+}
+
+.home h1 {
+  padding: 15px 0px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  overflow: scroll;
+}
+
+.btn-home:hover {
+  transform: scale(0.98);
+  background-image: linear-gradient(
+    to right,
+    rgb(24, 209, 212),
+    rgb(60, 190, 60)
+  );
+}
