@@ -22,7 +22,7 @@ function Login() {
     axios
       .post(`${BASE_API_URL}/users/login`, userData)
       .then((res) => {
-        console.log("Sign In Success!", res.data);
+        console.log("Sign In Success!");
         window.localStorage.setItem("token", res.data.respData);
         setEmaiInput("");
         setPassInput("");

@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    let tokenVal = window.localStorage.getItem("token");
+    setToken(tokenVal);
+  });
+
   return (
     <div className="navbar">
       <div className="container flex">
@@ -16,7 +23,11 @@ function Navbar() {
               <Link to="/signup">Signup</Link>
             </li>
             <li>
-              <Link to="/login">Login</Link>
+              {token ? (
+                <Link to="/logout">Logout</Link>
+              ) : (
+                <Link to="/login">Login</Link>
+              )}
             </li>
           </ul>
         </nav>

@@ -15,6 +15,12 @@ function Signup() {
 
   const handleSubmit = (nameInput, emailInput, passInput) => {
     console.log("Called");
+
+    if (nameInput === "" || emailInput === "" || passInput === "") {
+      alert("Please fill all fields properly!");
+      return;
+    }
+
     const newUser = {
       name: nameInput,
       email: emailInput,
@@ -38,13 +44,12 @@ function Signup() {
   return (
     <section className="signup">
       <div className="container grid">
-        <div className="signup-text">
-          <h1>Saving Contacts Eased</h1>
-          <p>
-            Quickly Signup to Explore
-          </p>
+        <div className="text">
+          <h1>Saving Contacts </h1>
+          <h2>Got Easier</h2>
+          <h2>Quickly Signup And Explore</h2>
         </div>
-        <div className="signup-form">
+        <div className="signup-form card">
           <div className="form-control">
             <h5>Full Name</h5>
             <Input

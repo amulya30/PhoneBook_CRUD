@@ -1,10 +1,10 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { NavBar } from "./Components";
-import { Signup, Login, Home } from "./Pages";
+import { Signup, Login, Home, Logout,} from "./Pages";
 
 function AppRouter() {
-  
+
   return (
     <div className="App">
       <Routes>
@@ -32,6 +32,14 @@ function AppRouter() {
             <>
               <NavBar />
               <Login />
+            </>
+          }
+        />
+        <Route
+          path={"/logout"}
+          element={
+            <>
+              <Logout/>
             </>
           }
         />

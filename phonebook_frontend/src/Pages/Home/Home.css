@@ -7,19 +7,19 @@
   overflow: visible;
   /* grid-template-columns: 45% 35%; */
   padding-top: 30px;
-  gap:10px;
+  gap: 10px;
 }
 
 .add-contact-form {
   position: relative;
   height: 300px;
-  width: 290px;
+  width: 100%;
   padding: 30px;
   z-index: 100;
-  justify-self: flex-start;
+  justify-self: center;
 }
 
-.my-contacts-form{
+.my-contacts-form {
   position: relative;
   justify-self: flex-start;
   width: 650px;
@@ -59,4 +59,16 @@ table {
     rgb(24, 209, 212),
     rgb(60, 190, 60)
   );
+}
+
+.fa {
+  text-align: right;
+}
+
+.btn-edit,.btn-del {
+  /* background-color: #f9d29d; */
+  border-radius: 3px;
+  border: 0;
+  background-color: Transparent;
+  cursor:pointer;
 }

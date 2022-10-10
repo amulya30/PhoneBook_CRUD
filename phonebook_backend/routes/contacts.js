@@ -34,20 +34,34 @@ router.post("/addcontact", authUser, async (req, res) => {
 router.get("/savedcontacts", authUser, async (req, res) => {
   const userId = req.id;
 
-  Contact.find({ userId: userId })
+  Contact.find(
+    { userId: userId },
+    { _id: false, createdAt: false, updatedAt: false }
+  )
     .select(["contactName", "contactNumber"])
     .then((fetchedContacts) => {
-      res
-        .status(200)
-        .json({
-          msg: "Retrieved Contacts Successfully",
-          contacts: fetchedContacts,
-        });
+      console.log(fetchedContacts);
+      res.status(200).json({
+        msg: "Retrieved Contacts Successfully",
+        contacts: fetchedContacts,
+      });
     })
-    .catch((err) =>{
+    .catch((err) => {
       console.log(err);
-      res.status(400).json({msg:"No contacts found",errReason:err})
+      res.status(400).json({ msg: "No contacts found", errReason: err });
     });
+});
+
+router.delete("/deleteContact", async (req, res) => {
+  let contact = req.body.contact;
+  console.log("ContactNUmber->", contact);
+
+  Contact.deleteOne({ contactNumber: contact })
+    .then((updatedUser) => {
+      console.log(updatedUser);
+      res.status(200).json({ msg: "Contact Deleted" });
+    })
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;
