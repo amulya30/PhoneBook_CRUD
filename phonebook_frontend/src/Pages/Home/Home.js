@@ -4,26 +4,28 @@ import { Input, Button } from "../../Components";
 import axios from "axios";
 import { BASE_URL } from "../../APP_EXPORTS";
 import { useNavigate } from "react-router-dom";
+import { ReadOnlyRow, EditableRow } from "../../Components";
 
 function Home() {
+  //Add-Contact Form
   const [nameInput, setNameInput] = useState("");
   const [numberInput, setNumberInput] = useState("");
-
   const [savedContacts, setSavedContacts] = useState([]);
-
   const [addApiTurnedOn, setaddApiTurnedOn] = useState(false);
-
   const [token, setToken] = useState(window.localStorage.getItem("token"));
 
   const navigate = useNavigate();
+  const [editContactId, setEditContactId] = useState(null);
 
   //Takes to login if not logged
   useEffect(() => {
     const token = window.localStorage.getItem("token");
     if (token === null) {
       navigate("/login");
+    } else {
+      setToken(token);
     }
-  });
+  }, []);
 
   //Fetches saved contacts
   useEffect(() => {
@@ -42,14 +44,14 @@ function Home() {
     axios
       .get(`${BASE_URL}/contacts/savedcontacts`, config)
       .then((res) => {
-        console.log("Contact Fetched!", res.data.contacts);
-        setSavedContacts(res.data.contacts);
+        console.log("Contact Fetched!", res.data);
         setaddApiTurnedOn(false);
+        setSavedContacts(res.data.contacts);
       })
       .catch((err) => {
         console.log(err.response.data.msg);
       });
-  }, [addApiTurnedOn, token]);
+  }, [addApiTurnedOn]);
 
   const handleContactAdd = (nameInput, numberInput) => {
     if (nameInput === "" || numberInput === "") {
@@ -83,13 +85,21 @@ function Home() {
       });
   };
 
-  const updateRecord = (index) => {
-    console.log(index);
+  const handleEditClick = (event, elementId) => {
+    event.preventDefault();
+    console.log(elementId);
+    setEditContactId(elementId);
   };
 
-  const deleteRecord = (index) => {
+  const saveRecord = (updatedContact, id) => {
+    console.log(id, updatedContact);
+
+    const contactToUpdate = {
+      contactName: updatedContact.NameInput,
+      contactNumber: updatedContact.NumberInput,
+    };
+
     const token = window.localStorage.getItem("token");
-    // console.log(token);
 
     const config = {
       headers: {
@@ -97,25 +107,42 @@ function Home() {
       },
     };
 
-    let contactNumber = savedContacts[index].contactNumber;
-
-    const dataToDelete = {
-      data: {
-        contact: contactNumber,
-      },
-    };
-
     axios
-      .delete(`${BASE_URL}/contacts/deleteContact`, dataToDelete, config)
+      .put(`${BASE_URL}/contacts/updateContact`, contactToUpdate, config)
       .then((res) => {
-        // console.log("Contact Added!", res.data);
-        // setNameInput("");
-        // setNumberInput("");
+        alert(res.data.msg);
+        setNameInput("");
+        setNumberInput("");
         setaddApiTurnedOn(true);
       })
       .catch((err) => {
         console.log(err.response.data.msg);
       });
+    setEditContactId(null);
+  };
+
+  const deleteRecord = (index) => {
+    const token = window.localStorage.getItem("token");
+
+    let contactNumber = savedContacts[index].contactNumber;
+
+    axios
+      .delete(`${BASE_URL}/contacts/deleteContact`, {
+        data: { contact: contactNumber },
+        headers: { "auth-token": token },
+      })
+      .then((res) => {
+        setaddApiTurnedOn(true);
+        console.log("Contact Deleted!", res.data);
+      })
+      .catch((err) => {
+        console.log(err.response.data.msg);
+      });
+    setEditContactId(null);
+  };
+
+  const handleCancel = () => {
+    setEditContactId(null);
   };
 
   return (
@@ -157,7 +184,11 @@ function Home() {
             <Button
               name="addcontact"
               type="submit"
-              text="Add Contact"
+              text={
+                <i className="fa fa-phone" aria-hidden="true">
+                  Add Contact
+                </i>
+              }
               className="btn btn-home"
               onClick={() => handleContactAdd(nameInput, numberInput)}
             />
@@ -172,35 +203,28 @@ function Home() {
                 <th>S.No</th>
                 <th>Contact Name</th>
                 <th>Contact Number</th>
-                <th colSpan={2}>Modify Contacts</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {savedContacts.map((contact, index) => {
+              {savedContacts.map((contactObj, index) => {
                 return (
                   <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td id={index}>{contact.contactName}</td>
-                    <td id={index}>{contact.contactNumber}</td>
-                    <td>
-                      <Button
-                        id={index}
-                        name="edit"
-                        type="submit"
-                        text="Edit"
-                        className="btn-edit"
-                        onClick={() => updateRecord(index)}
+                    {index === editContactId ? (
+                      <EditableRow
+                        index={editContactId}
+                        contact={contactObj}
+                        handleSave={saveRecord}
+                        handleDelete={deleteRecord}
+                        handleCancel={handleCancel}
                       />
-                    </td>
-                    <td>
-                      <Button
-                        name="delete"
-                        type="submit"
-                        text="Delete"
-                        className="btn-del"
-                        onClick={() => deleteRecord(index)}
+                    ) : (
+                      <ReadOnlyRow
+                        index={index}
+                        contact={contactObj}
+                        handleEditClick={handleEditClick}
                       />
-                    </td>
+                    )}
                   </tr>
                 );
               })}

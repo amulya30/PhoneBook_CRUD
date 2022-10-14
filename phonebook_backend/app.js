@@ -24,16 +24,17 @@ const connection = mongoose.connection;
 
 connection.once("open", () => {
   console.log("Connection with DB Successful!");
-});                                               
+});
 
 //Route Imports
 const usersRouter = require("./routes/users");
-const addcontactRouter = require ("./routes/contacts");
+const addcontactRouter = require("./routes/contacts");
 
 //Routes
 app.use("/users", usersRouter);
-app.use("/contacts",addcontactRouter);
-// PORT mentioned for the server to run on it
+app.use("/contacts", addcontactRouter);
+
+// Port mentioned for the server to run on it
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

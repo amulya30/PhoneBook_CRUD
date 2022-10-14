@@ -34,13 +34,14 @@ router.post("/addcontact", authUser, async (req, res) => {
 router.get("/savedcontacts", authUser, async (req, res) => {
   const userId = req.id;
 
-  Contact.find(
-    { userId: userId },
-    { _id: false, createdAt: false, updatedAt: false }
-  )
-    .select(["contactName", "contactNumber"])
+  let userProjection = {
+    userId: false,
+    createdAt: false,
+    updatedAt: false,
+  };
+
+  Contact.find({ userId: userId }, userProjection)
     .then((fetchedContacts) => {
-      console.log(fetchedContacts);
       res.status(200).json({
         msg: "Retrieved Contacts Successfully",
         contacts: fetchedContacts,
@@ -52,14 +53,31 @@ router.get("/savedcontacts", authUser, async (req, res) => {
     });
 });
 
-router.delete("/deleteContact", async (req, res) => {
+router.delete("/deleteContact", authUser, async (req, res) => {
   let contact = req.body.contact;
-  console.log("ContactNUmber->", contact);
 
   Contact.deleteOne({ contactNumber: contact })
     .then((updatedUser) => {
-      console.log(updatedUser);
       res.status(200).json({ msg: "Contact Deleted" });
+    })
+    .catch((err) => console.log(err));
+});
+
+router.put("/updateContact", authUser, async (req, res) => {
+  let userId = req.id;
+  let contact = req.body;
+
+  Contact.updateOne(
+    { userId: userId },
+    {
+      $set: {
+        contactName: contact.contactName,
+        contactNumber: contact.contactNumber,
+      },
+    }
+  )
+    .then((updatedUser) => {
+      res.status(200).json({ msg: "Contact Updated!" });
     })
     .catch((err) => console.log(err));
 });

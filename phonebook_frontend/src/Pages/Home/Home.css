@@ -27,14 +27,13 @@
 }
 
 .add-contact-form .form-control {
-  margin-top: 30px;
+  margin-top: 50px;
 }
 
 .home input {
   border: 0;
   outline: 0;
   width: 100%;
-  padding-top: 15px;
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 15px;
   border-bottom: 1px solid #747070;
@@ -46,10 +45,16 @@
 }
 
 table {
-  border-collapse: collapse;
   width: 100%;
+  height: 200px;
   text-align: center;
   overflow: scroll;
+  border-collapse: collapse;
+}
+
+.home table input {
+  text-align: center;
+  border-bottom: none;
 }
 
 .btn-home:hover {
@@ -62,13 +67,27 @@ table {
 }
 
 .fa {
-  text-align: right;
+  cursor: pointer;
+  font-size: larger;
 }
 
-.btn-edit,.btn-del {
-  /* background-color: #f9d29d; */
-  border-radius: 3px;
-  border: 0;
-  background-color: Transparent;
-  cursor:pointer;
+.btn-cancel,
+.btn-save,
+.btn-del {
+  padding: 5px;
+  margin-left: 2px;
+}
+
+.btn-save:hover{
+  background-image: linear-gradient(to right, rgb(9, 178, 164), rgb(88, 178, 9));
+}
+
+.btn-del:hover {
+  background-image: linear-gradient(to right, rgb(178, 9, 9), rgb(178, 9, 9));
+}
+
+.modify-section {
+  display: flex;
+  justify-content: center;
+  padding: 2px;
 }
