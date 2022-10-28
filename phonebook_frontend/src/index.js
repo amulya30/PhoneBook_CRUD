@@ -4,12 +4,15 @@ import "./index.css";
 import AppRouter from "./App-Router";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { UserAuthProvider } from "./Context/TokenAuth";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AppRouter/>
+      <UserAuthProvider>
+        <AppRouter />
+      </UserAuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

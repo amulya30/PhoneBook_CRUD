@@ -1,9 +1,14 @@
 import React from "react";
 import { Input, Button } from "../../Components";
-import { useState} from "react";
+import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../APP_EXPORTS";
 import { useNavigate } from "react-router-dom";
+
+//Auth-Context
+import { useContext } from "react";
+import { UserAuthContext } from "../../Context/TokenAuth";
+
 import "./Login.css";
 
 function Login() {
@@ -12,6 +17,8 @@ function Login() {
   const BASE_API_URL = BASE_URL;
 
   let navigate = useNavigate();
+
+  const authToken = useContext(UserAuthContext);
 
   const handleSubmit = (emailInput, passInput) => {
     const userData = {
@@ -24,9 +31,13 @@ function Login() {
       .then((res) => {
         console.log("Sign In Success!");
         window.localStorage.setItem("token", res.data.respData);
+
+        //Setting token in context
+        authToken.setToken(localStorage.getItem("token"));
+
         setEmaiInput("");
         setPassInput("");
-        navigate("/");
+        navigate("/home");
       })
       .catch((err) => {
         console.log(err);

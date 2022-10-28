@@ -64,11 +64,10 @@ router.delete("/deleteContact", authUser, async (req, res) => {
 });
 
 router.put("/updateContact", authUser, async (req, res) => {
-  let userId = req.id;
   let contact = req.body;
-
+  console.log(contact);
   Contact.updateOne(
-    { userId: userId },
+    { _id: contact.contactId },
     {
       $set: {
         contactName: contact.contactName,

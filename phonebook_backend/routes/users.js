@@ -39,7 +39,6 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  console.log(req.body);
   // const userId= await User.findOne({email}).then(()=>)
   const { email, pass } = req.body;
 
@@ -54,7 +53,6 @@ router.post("/login", async (req, res) => {
     .select(["email", "name", "password"])
     .then((fetchedUser) => {
       //Here JWT Token will be created
-      console.log(fetchedUser);
       bcrypt
         .compare(pass, fetchedUser.password)
         .then((matched) => {

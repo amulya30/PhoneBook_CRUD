@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
-import "./Home.css";
-import { Input, Button } from "../../Components";
 import axios from "axios";
 import { BASE_URL } from "../../APP_EXPORTS";
-import { useNavigate } from "react-router-dom";
-import { ReadOnlyRow, EditableRow } from "../../Components";
+import { useNavigate, useLocation, redirect } from "react-router-dom";
+
+//Custom Components
+import { Input, Button, ReadOnlyRow, EditableRow } from "../../Components";
+
+//Styling
+import "./Home.css";
+
+//Images
+import { avatar } from "../../../src/images";
 
 function Home() {
   //Add-Contact Form
@@ -12,24 +18,22 @@ function Home() {
   const [numberInput, setNumberInput] = useState("");
   const [savedContacts, setSavedContacts] = useState([]);
   const [addApiTurnedOn, setaddApiTurnedOn] = useState(false);
-  const [token, setToken] = useState(window.localStorage.getItem("token"));
+  const [editContactId, setEditContactId] = useState(null);
+  const [token, setToken] = useState();
 
   const navigate = useNavigate();
-  const [editContactId, setEditContactId] = useState(null);
 
   //Takes to login if not logged
   useEffect(() => {
-    const token = window.localStorage.getItem("token");
+    let token = window.localStorage.getItem("token");
     if (token === null) {
       navigate("/login");
-    } else {
-      setToken(token);
     }
   }, []);
 
   //Fetches saved contacts
   useEffect(() => {
-    // let userToken = window.localStorage.getItem("token");
+    let token = window.localStorage.getItem("token");
 
     if (!token) {
       return;
@@ -45,15 +49,18 @@ function Home() {
       .get(`${BASE_URL}/contacts/savedcontacts`, config)
       .then((res) => {
         console.log("Contact Fetched!", res.data);
-        setaddApiTurnedOn(false);
         setSavedContacts(res.data.contacts);
+        setaddApiTurnedOn(false);
       })
       .catch((err) => {
-        console.log(err.response.data.msg);
+        console.log("nkjn", err);
       });
   }, [addApiTurnedOn]);
 
+  //Add-Contact
   const handleContactAdd = (nameInput, numberInput) => {
+    let token = window.localStorage.getItem("token");
+
     if (nameInput === "" || numberInput === "") {
       alert("Please fill all the information properly.");
       return;
@@ -63,8 +70,6 @@ function Home() {
       contactName: nameInput,
       contactNumber: numberInput,
     };
-
-    const token = window.localStorage.getItem("token");
 
     const config = {
       headers: {
@@ -85,21 +90,22 @@ function Home() {
       });
   };
 
+  //Edit-Contact
   const handleEditClick = (event, elementId) => {
     event.preventDefault();
     console.log(elementId);
     setEditContactId(elementId);
   };
 
-  const saveRecord = (updatedContact, id) => {
-    console.log(id, updatedContact);
+  //Updates Record
+  const updateRecord = (updatedContact, id) => {
+    let token = window.localStorage.getItem("token");
 
     const contactToUpdate = {
+      contactId: id,
       contactName: updatedContact.NameInput,
       contactNumber: updatedContact.NumberInput,
     };
-
-    const token = window.localStorage.getItem("token");
 
     const config = {
       headers: {
@@ -121,19 +127,20 @@ function Home() {
     setEditContactId(null);
   };
 
+  //Deletes Contact
   const deleteRecord = (index) => {
-    const token = window.localStorage.getItem("token");
+    let token = window.localStorage.getItem("token");
 
     let contactNumber = savedContacts[index].contactNumber;
-
+    console.log(token);
     axios
       .delete(`${BASE_URL}/contacts/deleteContact`, {
         data: { contact: contactNumber },
         headers: { "auth-token": token },
       })
       .then((res) => {
-        setaddApiTurnedOn(true);
         console.log("Contact Deleted!", res.data);
+        setaddApiTurnedOn(true);
       })
       .catch((err) => {
         console.log(err.response.data.msg);
@@ -146,93 +153,117 @@ function Home() {
   };
 
   return (
-    <section className="home">
-      <div className="container grid">
-        <div className="add-contact-form card">
-          <p>Quick Contact Add</p>
-          <div className="form-control">
-            <Input
-              type="text"
-              name="contactName"
-              placeholder="Contact Name"
-              onChange={(e) => {
-                setNameInput(e.target.value);
-              }}
-              value={nameInput}
-            />
-          </div>
-          <div className="form-control">
-            <Input
-              type="text"
-              name="contactNumber"
-              placeholder="Contact Number"
-              value={numberInput}
-              onChange={(e) => {
-                if (isNaN(e.target.value)) {
-                  alert("Please enter a valid contact number");
-                  return;
-                } else if (e.target.value.length > 10) {
-                  alert("Phone Number can be only of 10 digits");
-                } else {
-                  setNumberInput(e.target.value);
-                }
-              }}
-              title="Number should be only of 10 digits"
-            />
-          </div>
-          <div className="form-control">
-            <Button
-              name="addcontact"
-              type="submit"
-              text={
-                <i className="fa fa-phone" aria-hidden="true">
-                  Add Contact
-                </i>
-              }
-              className="btn btn-home"
-              onClick={() => handleContactAdd(nameInput, numberInput)}
-            />
-          </div>
-        </div>
+    <>
+      <section className="home">
+        <div className="container grid">
+          <div className="add-contact-form card">
+            <p>Quick Contact Add</p>
 
-        <div className="my-contacts-form card">
-          <p>Saved Contacts List</p>
-          <table border="2px">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Contact Name</th>
-                <th>Contact Number</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {savedContacts.map((contactObj, index) => {
-                return (
-                  <tr key={index}>
-                    {index === editContactId ? (
-                      <EditableRow
-                        index={editContactId}
-                        contact={contactObj}
-                        handleSave={saveRecord}
-                        handleDelete={deleteRecord}
-                        handleCancel={handleCancel}
-                      />
-                    ) : (
-                      <ReadOnlyRow
-                        index={index}
-                        contact={contactObj}
-                        handleEditClick={handleEditClick}
-                      />
-                    )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+            <div className="form-control">
+              <i className="fa fa-user"></i>
+              <Input
+                type="text"
+                name="contactName"
+                placeholder="Contact Name"
+                onChange={(e) => {
+                  setNameInput(e.target.value);
+                }}
+                value={nameInput}
+              />
+            </div>
+            <div className="form-control">
+              <i className="fa fa-mobile"></i>
+              <Input
+                type="text"
+                name="contactNumber"
+                placeholder="Contact Number"
+                value={numberInput}
+                onChange={(e) => {
+                  if (isNaN(e.target.value)) {
+                    alert("Please enter a valid contact number");
+                    return;
+                  } else if (e.target.value.length > 10) {
+                    alert("Phone Number can be only of 10 digits");
+                  } else {
+                    setNumberInput(e.target.value);
+                  }
+                }}
+                title="Number should be only of 10 digits"
+              />
+              <Button
+                name="addcontact"
+                type="submit"
+                text={"+ Create New Contact"}
+                className="btn btn-home"
+                onClick={() => handleContactAdd(nameInput, numberInput)}
+              />
+            </div>
+            {/* <div className="form-control">
+              
+            </div> */}
+          </div>
+
+          <div className="my-contacts-form grid card">
+            <div className="profileInfo ">
+              <h2>Your Info</h2>
+              <p>Name:</p>
+              <p>Role: </p>
+              <p>Department: </p>
+              <p>Email-Id:</p>
+              <p>Stack: MERN</p>
+            </div>
+
+            <div className="profilePic">
+              <img src={avatar} alt="" />
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <section className="home" id="contacts">
+        <div className="container">
+          <div className="card my-contact-list">
+            <h2>Your Saved Contacts</h2>
+            <div className="table">
+              <table id="my-contacts">
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Contact Name</th>
+                    <th>Contact Number</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {savedContacts != 0 ? (
+                    savedContacts.map((contactObj, index) => {
+                      return (
+                        <tr key={index}>
+                          {index === editContactId ? (
+                            <EditableRow
+                              index={editContactId}
+                              contact={contactObj}
+                              handleSave={updateRecord}
+                              handleDelete={deleteRecord}
+                              handleCancel={handleCancel}
+                            />
+                          ) : (
+                            <ReadOnlyRow index={index} contact={contactObj} handleEditClick={handleEditClick} />
+                          )}
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>You have not saved any contact yet</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 

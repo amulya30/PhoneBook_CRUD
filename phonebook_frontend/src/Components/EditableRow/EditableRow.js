@@ -2,13 +2,7 @@ import React from "react";
 import { Input, Button } from "../index";
 import { useState, useEffect } from "react";
 
-function EditableRow({
-  index,
-  contact,
-  handleSave,
-  handleDelete,
-  handleCancel,
-}) {
+function EditableRow({ index, contact, handleSave, handleDelete, handleCancel }) {
   //   const [nameInput, setNameInput] = useState("");
   //   const [numberInput, setNumberInput] = useState("");
 
@@ -73,19 +67,9 @@ function EditableRow({
             onClick={() => handleSave(listData, contact._id)}
           />
 
-          <Button
-            name="edit-contact"
-            text="Cancel"
-            className="btn btn-cancel"
-            onClick={() => handleCancel()}
-          />
+          <Button name="edit-contact" text="Cancel" className="btn btn-cancel" onClick={() => handleCancel()} />
 
-          <Button
-            name="delete-contact"
-            className="btn btn-del"
-            text="Delete"
-            onClick={() => handleDelete(index)}
-          />
+          <Button name="delete-contact" className="btn btn-del" text="Delete" onClick={() => handleDelete(index)} />
         </div>
       </td>
     </>

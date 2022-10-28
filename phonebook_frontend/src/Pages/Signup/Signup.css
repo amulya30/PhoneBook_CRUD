@@ -38,11 +38,15 @@
   width: 100%;
   outline: 0;
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 20px;
+  font-size: 14px;
 }
 
 .signup-form h5 {
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: 200;
+  line-height: 1;
+  margin: 10px 0;
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .signup h1 {
@@ -51,13 +55,6 @@
 
 .signup p {
   margin: 20px 0;
-}
-
-h5 {
-  font-weight: 200;
-  line-height: 1;
-  margin: 10px 0;
-  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .btn-signup {

@@ -11,7 +11,6 @@ const contactSchema = new Schema(
     },
     contactNumber: {
       type: "String",
-      unique: true,
       required: true,
       trim: true,
     },

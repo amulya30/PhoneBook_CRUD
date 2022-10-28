@@ -1,6 +1,8 @@
 .home {
   height: 400px;
   background-image: linear-gradient(to right, #ffd8c8, #f9d29d);
+  /* padding: 15px 0px; */
+  scroll-behavior: smooth;
 }
 
 .home .grid {
@@ -19,51 +21,103 @@
   justify-self: center;
 }
 
-.my-contacts-form {
-  position: relative;
-  justify-self: flex-start;
-  width: 650px;
-  padding: 30px;
+.add-contact-form p {
+  font-size: 20px;
 }
 
 .add-contact-form .form-control {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
-.home input {
+.add-contact-form input {
   border: 0;
   outline: 0;
   width: 100%;
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 15px;
+  font-size: 16px;
   border-bottom: 1px solid #747070;
   background-color: #f4f4f4;
 }
 
-.home h1 {
-  padding: 15px 0px;
+/* User Profile Card */
+.profileInfo {
+  /* padding: 70px 0px;
+  margin-left: 70px; */
 }
 
-table {
+.profileInfo p {
+  margin-top: 10px;
+}
+
+.profilePic {
+  text-align: end;
+}
+
+img {
+  /* border-radius: 30px; */
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileInfo h2 {
+  padding-bottom: 10px;
+  font-weight: 300;
+}
+
+.my-contact-list h2 {
+  padding-bottom: 10px;
+  font-weight: lighter;
+}
+
+/* User Contacts List Card */
+.my-contact-list .table {
+  overflow: scroll;
+  max-height: 290px;
+}
+
+#my-contacts th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+#my-contacts {
+  border-collapse: collapse;
   width: 100%;
-  height: 200px;
   text-align: center;
   overflow: scroll;
-  border-collapse: collapse;
 }
 
-.home table input {
+#my-contacts th {
+  padding-top: 12px;
+  padding-bottom: 12px;
   text-align: center;
-  border-bottom: none;
+  background-color: #04aa6d;
+  color: white;
+}
+
+#my-contacts td {
+  padding: 10px;
+}
+
+#my-contacts tr:hover {
+  background-color: rgba(238, 183, 3, 0.497);
+}
+
+#my-contacts input {
+  text-align: center;
+  padding: 5px;
+  font-size: 18px;
+}
+
+.btn-home {
+  margin-top: 15px;
 }
 
 .btn-home:hover {
   transform: scale(0.98);
-  background-image: linear-gradient(
-    to right,
-    rgb(24, 209, 212),
-    rgb(60, 190, 60)
-  );
+  background-image: linear-gradient(to right, rgb(24, 209, 212), rgb(60, 190, 60));
 }
 
 .fa {
@@ -71,23 +125,23 @@ table {
   font-size: larger;
 }
 
-.btn-cancel,
+.modify-section {
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+}
+
 .btn-save,
+.btn-cancel,
 .btn-del {
   padding: 5px;
   margin-left: 2px;
 }
 
-.btn-save:hover{
+.btn-save:hover {
   background-image: linear-gradient(to right, rgb(9, 178, 164), rgb(88, 178, 9));
 }
 
 .btn-del:hover {
   background-image: linear-gradient(to right, rgb(178, 9, 9), rgb(178, 9, 9));
-}
-
-.modify-section {
-  display: flex;
-  justify-content: center;
-  padding: 2px;
 }
