@@ -7,7 +7,10 @@ function ReadOnlyRow({ index, contact, handleEditClick }) {
       <td>{contact.contactName}</td>
       <td>{contact.contactNumber}</td>
       <td>
-        <i className="fa fa-pencil" aria-hidden="true" onClick={(event) => handleEditClick(event, index)}></i>
+        <i 
+        className="fa fa-pencil" 
+        aria-hidden="true" 
+        onClick={(event) => handleEditClick(event, index)}></i>
       </td>
     </>
   );

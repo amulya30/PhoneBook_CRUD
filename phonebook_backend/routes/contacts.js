@@ -4,8 +4,6 @@ let Contact = require("../models/contact.model");
 
 router.post("/addcontact", authUser, async (req, res) => {
   const { contactName, contactNumber } = req.body;
-  console.log(req.body);
-  console.log(req.id);
   if (contactName == "" || contactNumber == "") {
     return res.status(400).json({
       msg: "Please Fill Contacts Form",
@@ -33,7 +31,7 @@ router.post("/addcontact", authUser, async (req, res) => {
 
 router.get("/savedcontacts", authUser, async (req, res) => {
   const userId = req.id;
-
+  console.log("Requested!");
   let userProjection = {
     userId: false,
     createdAt: false,
@@ -65,7 +63,7 @@ router.delete("/deleteContact", authUser, async (req, res) => {
 
 router.put("/updateContact", authUser, async (req, res) => {
   let contact = req.body;
-  console.log(contact);
+
   Contact.updateOne(
     { _id: contact.contactId },
     {

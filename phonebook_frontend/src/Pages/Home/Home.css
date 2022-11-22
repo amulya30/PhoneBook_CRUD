@@ -99,16 +99,21 @@ img {
 
 #my-contacts td {
   padding: 10px;
+  font-size: 18px;
 }
 
 #my-contacts tr:hover {
-  background-color: rgba(238, 183, 3, 0.497);
+  /* background-color: rgba(238, 183, 3, 0.497); */
 }
 
 #my-contacts input {
   text-align: center;
-  padding: 5px;
+  /* padding: 5px; */
   font-size: 18px;
+  outline: none;
+  border: 0;
+  background-color: #f4f4f4;
+  /* border-bottom: 1px solid #b4becb; */
 }
 
 .btn-home {
@@ -128,7 +133,7 @@ img {
 .modify-section {
   display: flex;
   justify-content: center;
-  padding: 2px;
+  /* padding: 2px; */
 }
 
 .btn-save,

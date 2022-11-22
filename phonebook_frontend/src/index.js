@@ -5,13 +5,16 @@ import AppRouter from "./App-Router";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { UserAuthProvider } from "./Context/TokenAuth";
+import { ContactsProvider } from "./Context/ContactsContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserAuthProvider>
-        <AppRouter />
+        <ContactsProvider>
+          <AppRouter />
+        </ContactsProvider>
       </UserAuthProvider>
     </BrowserRouter>
   </React.StrictMode>

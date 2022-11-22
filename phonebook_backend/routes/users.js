@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const authUser = require("../middleware/authenticator");
+
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 let User = require("../models/user.model");
@@ -63,9 +65,7 @@ router.post("/login", async (req, res) => {
             };
 
             const token = jwt.sign(fetchedUser._id.toString(), JWT_SECRET_KEY);
-            res
-              .status(200)
-              .json({ msg: "User Found", respData: token, data: user });
+            res.status(200).json({ msg: "User Found", respData: token, data: user });
           }
         })
         .catch((err) => {
@@ -75,9 +75,22 @@ router.post("/login", async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res
-        .status(400)
-        .json({ msg: "UserName or Password is incorrect", errReason: err });
+      res.status(400).json({ msg: "UserName or Password is incorrect", errReason: err });
+    });
+});
+
+router.post("/userDetails", authUser, async (req, res) => {
+  const userId = req.id;
+
+  User.find({ userId: userId })
+    .then((fetchedUser) => {
+      return res.status(200).json(
+        { userName: fetchedUser.name, 
+          userEmail: fetchedUser.email 
+        });
+    })
+    .catch((err) => {
+      console.log(err);
     });
 });
 

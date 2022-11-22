@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../APP_EXPORTS";
-import { useNavigate, useLocation, redirect } from "react-router-dom";
+import { ContactsContext } from "../../Context/ContactsContext";
 
 //Custom Components
-import { Input, Button, ReadOnlyRow, EditableRow } from "../../Components";
+import { Button, EditableRow, Input, MsgNotifier, ReadOnlyRow } from "../../Components";
 
 //Styling
 import "./Home.css";
@@ -13,15 +14,22 @@ import "./Home.css";
 import { avatar } from "../../../src/images";
 
 function Home() {
+  //Navigate
+  const navigate = useNavigate();
+
   //Add-Contact Form
   const [nameInput, setNameInput] = useState("");
   const [numberInput, setNumberInput] = useState("");
-  const [savedContacts, setSavedContacts] = useState([]);
-  const [addApiTurnedOn, setaddApiTurnedOn] = useState(false);
   const [editContactId, setEditContactId] = useState(null);
-  const [token, setToken] = useState();
 
-  const navigate = useNavigate();
+  //Contacts Coming from Contacts Context
+  const contacts = useContext(ContactsContext).savedContacts;
+
+  const { setSavedContacts } = useContext(ContactsContext);
+
+  //Notifier Visibility
+  const [notifierVisible, setNotifierVisible] = useState(null);
+  const [description, setDescription] = useState("");
 
   //Takes to login if not logged
   useEffect(() => {
@@ -32,7 +40,7 @@ function Home() {
   }, []);
 
   //Fetches saved contacts
-  useEffect(() => {
+  const updateListHandler = () => {
     let token = window.localStorage.getItem("token");
 
     if (!token) {
@@ -48,14 +56,17 @@ function Home() {
     axios
       .get(`${BASE_URL}/contacts/savedcontacts`, config)
       .then((res) => {
-        console.log("Contact Fetched!", res.data);
+        // console.log("Contact Fetched!", res.data);
         setSavedContacts(res.data.contacts);
-        setaddApiTurnedOn(false);
+        setNotifierVisible(true);
+        setTimeout(() => {
+          setNotifierVisible(false);
+        }, 2000);
       })
       .catch((err) => {
-        console.log("nkjn", err);
+        console.log("Error in fetching", err);
       });
-  }, [addApiTurnedOn]);
+  };
 
   //Add-Contact
   const handleContactAdd = (nameInput, numberInput) => {
@@ -83,7 +94,9 @@ function Home() {
         console.log("Contact Added!", res.data);
         setNameInput("");
         setNumberInput("");
-        setaddApiTurnedOn(true);
+
+        setDescription("Contact Added !");
+        updateListHandler();
       })
       .catch((err) => {
         console.log(err.response.data.msg);
@@ -91,7 +104,7 @@ function Home() {
   };
 
   //Edit-Contact
-  const handleEditClick = (event, elementId) => {
+  const handleRowEditClick = (event, elementId) => {
     event.preventDefault();
     console.log(elementId);
     setEditContactId(elementId);
@@ -116,23 +129,21 @@ function Home() {
     axios
       .put(`${BASE_URL}/contacts/updateContact`, contactToUpdate, config)
       .then((res) => {
-        alert(res.data.msg);
+        setDescription(res.data.msg);
         setNameInput("");
         setNumberInput("");
-        setaddApiTurnedOn(true);
+        setEditContactId(null);
+        updateListHandler();
       })
       .catch((err) => {
         console.log(err.response.data.msg);
       });
-    setEditContactId(null);
   };
 
   //Deletes Contact
   const deleteRecord = (index) => {
     let token = window.localStorage.getItem("token");
-
-    let contactNumber = savedContacts[index].contactNumber;
-    console.log(token);
+    let contactNumber = contacts[index].contactNumber;
     axios
       .delete(`${BASE_URL}/contacts/deleteContact`, {
         data: { contact: contactNumber },
@@ -140,12 +151,13 @@ function Home() {
       })
       .then((res) => {
         console.log("Contact Deleted!", res.data);
-        setaddApiTurnedOn(true);
+        setDescription("Contact Deleted!");
+        updateListHandler();
+        setEditContactId(null);
       })
       .catch((err) => {
         console.log(err.response.data.msg);
       });
-    setEditContactId(null);
   };
 
   const handleCancel = () => {
@@ -154,7 +166,7 @@ function Home() {
 
   return (
     <>
-      <section className="home">
+      <section className="home" id="addContact">
         <div className="container grid">
           <div className="add-contact-form card">
             <p>Quick Contact Add</p>
@@ -190,6 +202,8 @@ function Home() {
                 }}
                 title="Number should be only of 10 digits"
               />
+            </div>
+            <div className="form-control-button">
               <Button
                 name="addcontact"
                 type="submit"
@@ -198,15 +212,12 @@ function Home() {
                 onClick={() => handleContactAdd(nameInput, numberInput)}
               />
             </div>
-            {/* <div className="form-control">
-              
-            </div> */}
           </div>
 
           <div className="my-contacts-form grid card">
             <div className="profileInfo ">
               <h2>Your Info</h2>
-              <p>Name:</p>
+              <p>Name: {}</p>
               <p>Role: </p>
               <p>Department: </p>
               <p>Email-Id:</p>
@@ -219,7 +230,7 @@ function Home() {
           </div>
         </div>
       </section>
-      <section className="home" id="contacts">
+      <section className="home" id="editContact">
         <div className="container">
           <div className="card my-contact-list">
             <h2>Your Saved Contacts</h2>
@@ -234,8 +245,8 @@ function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  {savedContacts != 0 ? (
-                    savedContacts.map((contactObj, index) => {
+                  {contacts.length !== 0 ? (
+                    contacts.map((contactObj, index) => {
                       return (
                         <tr key={index}>
                           {index === editContactId ? (
@@ -247,7 +258,7 @@ function Home() {
                               handleCancel={handleCancel}
                             />
                           ) : (
-                            <ReadOnlyRow index={index} contact={contactObj} handleEditClick={handleEditClick} />
+                            <ReadOnlyRow index={index} contact={contactObj} handleEditClick={handleRowEditClick} />
                           )}
                         </tr>
                       );
@@ -262,6 +273,7 @@ function Home() {
             </div>
           </div>
         </div>
+        <MsgNotifier show={notifierVisible} text={description} />
       </section>
     </>
   );

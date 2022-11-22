@@ -3,9 +3,6 @@ import { Input, Button } from "../index";
 import { useState, useEffect } from "react";
 
 function EditableRow({ index, contact, handleSave, handleDelete, handleCancel }) {
-  //   const [nameInput, setNameInput] = useState("");
-  //   const [numberInput, setNumberInput] = useState("");
-
   const [listData, setListData] = useState({
     NameInput: "",
     NumberInput: "",
